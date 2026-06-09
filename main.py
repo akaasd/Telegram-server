@@ -53,9 +53,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 Your BASF Gift Code is:
 
-━━━━━━━━━━━
+━━━━━━━━━
 `{new_code}`
-━━━━━━━━━━━
+━━━━━━━━━
 
 Use this code to access your available gift. We hope you enjoy it!
 ⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM.""",
