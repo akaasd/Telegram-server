@@ -5,7 +5,7 @@ import os
 import json
 from datetime import datetime
 
-TOKEN = os.getenv("8966882226:AAFhB8E2a6ubxg93dobkeIWVvUX0T-msBSg")  # Better to use env var too
+TOKEN = os.getenv("TELEGRAM_TOKEN")  # Better to use env var too
 
 # Firebase Config - Set these on Railway
 DATABASE_URL = os.getenv("FIREBASE_DB_URL")      # e.g. https://your-project-id-default-rtdb.firebaseio.com
