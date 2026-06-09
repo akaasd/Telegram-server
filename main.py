@@ -13,7 +13,7 @@ PATH = "TelegramBotGC"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    now_ms = int(datetime.utcnow().timestamp() * 1000)
+    now_ms = int(datetime.utcnow().timestamp() * 1000)   # Current time in milliseconds
     
     try:
         # Step 1: Get current data from Firebase
@@ -48,50 +48,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             put_url = f"{DATABASE_URL}/{PATH}.json?auth={DB_SECRET}"
             requests.put(put_url, json=save_data, timeout=10)
             
-            await update.message.reply_text(
-                f"""🎁 BASF Gift Code Available!
-
-Your BASF Gift Code is:
-{new_code}
-
-Use this code to access the available gift or promotion. We hope you enjoy it!
-
-⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM."""
-            )
-
+            await update.message.reply_text(new_code)
             print(f"✅ New code generated: {new_code} for user {user.id}")
-
         else:
             # Send existing code (within 1 minute)
-            await update.message.reply_text(
-                f"""🎁 BASF Gift Code Available!
-
-Your BASF Gift Code is:
-{stored_giftcode}
-
-Use this code to access the available gift or promotion. We hope you enjoy it!
-
-⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM."""
-            )
-
+            await update.message.reply_text(stored_giftcode)
             print(f"✅ Sent existing code: {stored_giftcode} to user {user.id}")
             
     except Exception as e:
         print(f"❌ Error: {e}")
-        
         # Fallback: Generate and send new code if anything fails
         new_code = f"{random.randint(100000, 999999)}"
-        
-        await update.message.reply_text(
-            f"""🎁 BASF Gift Code Available!
-
-Your BASF Gift Code is:
-{new_code}
-
-Use this code to access the available gift or promotion. We hope you enjoy it!
-
-⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM."""
-        )
+        await update.message.reply_text(new_code)
 
 app = Application.builder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
