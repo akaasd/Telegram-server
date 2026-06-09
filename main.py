@@ -29,10 +29,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         generate_new = True
         
         if stored_timestamp and isinstance(stored_timestamp, (int, float)):
-            time_diff_hours = time_diff_ms / (1000 * 60 * 60)
-
-if time_diff_hours <= 12:
-    generate_new = False
+            time_diff_minutes = time_diff_ms / (1000 * 60)
+            
+            if time_diff_minutes <= 1450:
+                generate_new = False
         
         if generate_new or not stored_giftcode:
             # Generate new 6-digit code
