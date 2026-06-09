@@ -32,7 +32,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             time_diff_ms = now_ms - stored_timestamp
             time_diff_minutes = time_diff_ms / (1000 * 60)
             
-            if time_diff_minutes <= 1:
+            if time_diff_minutes <= 1440:
                 generate_new = False
         
         if generate_new or not stored_giftcode:
