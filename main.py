@@ -29,7 +29,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         generate_new = True
         
         if stored_timestamp and isinstance(stored_timestamp, (int, float)):
-           time_diff_ms = now_ms - stored_timestamp
+            time_diff_ms = now_ms - stored_timestamp
             time_diff_minutes = time_diff_ms / (1000 * 60)
             
             if time_diff_minutes <= 1:
@@ -49,17 +49,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             requests.put(put_url, json=save_data, timeout=10)
             
             await update.message.reply_text(
-    f"""🎁 *BASF Gift Code Available!*
+                f"""🎁 BASF Gift Code Available!
 
 Your BASF Gift Code is:
+{new_code}
 
-━━━━━━━━━
-`{new_code}`
-━━━━━━━━━
+Use this code to access the available gift or promotion. We hope you enjoy it!
 
-Use this code to access your available gift. We hope you enjoy it!
-⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM.""",
-    parse_mode="Markdown"
+⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM."""
             )
 
             print(f"✅ New code generated: {new_code} for user {user.id}")
@@ -67,17 +64,14 @@ Use this code to access your available gift. We hope you enjoy it!
         else:
             # Send existing code (within 1 minute)
             await update.message.reply_text(
-    f"""🎁 *BASF Gift Code Available!*
+                f"""🎁 BASF Gift Code Available!
 
 Your BASF Gift Code is:
+{stored_giftcode}
 
-━━━━━━━━━━━
-`{stored_giftcode}`
-━━━━━━━━━━━
+Use this code to access the available gift or promotion. We hope you enjoy it!
 
-Use this code to access your available gift. We hope you enjoy it!
-⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM.""",
-    parse_mode="Markdown"
+⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM."""
             )
 
             print(f"✅ Sent existing code: {stored_giftcode} to user {user.id}")
@@ -89,18 +83,16 @@ Use this code to access your available gift. We hope you enjoy it!
         new_code = f"{random.randint(100000, 999999)}"
         
         await update.message.reply_text(
-    f"""🎁 *BASF Gift Code Available!*
+            f"""🎁 BASF Gift Code Available!
 
 Your BASF Gift Code is:
+{new_code}
 
-━━━━━━━━━━━
-`{new_code}`
-━━━━━━━━━━━
+Use this code to access the available gift or promotion. We hope you enjoy it!
 
-Use this code to access your available gift. We hope you enjoy it!
-⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM.""",
-    parse_mode="Markdown"
+⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM."""
         )
+
 app = Application.builder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 
