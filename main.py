@@ -13,34 +13,56 @@ PATH = "TelegramBotGC"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    now = datetime.utcnow()
-    
-    # Generate new 6-digit code
-    new_code = f"{random.randint(100000, 999999)}"
-    
-    # Prepare data
-    save_data = {
-        "giftcode": new_code,
-        "timestamp": int(now.timestamp() * 1000)   # milliseconds like JavaScript Date.now()
-    }
+    now_ms = int(datetime.utcnow().timestamp() * 1000)   # Current time in milliseconds
     
     try:
-        url = f"{DATABASE_URL}/{PATH}.json?auth={DB_SECRET}"
-        response = requests.put(url, json=save_data, timeout=10)
+        # Step 1: Get current data from Firebase
+        get_url = f"{DATABASE_URL}/{PATH}.json?auth={DB_SECRET}"
+        response = requests.get(get_url, timeout=10)
         
-        if response.ok:
-            print(f"✅ New code generated and saved: {new_code}")
+        data = response.json() if response.ok else {}
+        
+        stored_giftcode = data.get("giftcode")
+        stored_timestamp = data.get("timestamp")
+        
+        # Step 2: Check if we need to generate new code
+        generate_new = True
+        
+        if stored_timestamp and isinstance(stored_timestamp, (int, float)):
+            time_diff_ms = now_ms - stored_timestamp
+            time_diff_minutes = time_diff_ms / (1000 * 60)
+            
+            if time_diff_minutes <= 1:
+                generate_new = False
+        
+        if generate_new or not stored_giftcode:
+            # Generate new 6-digit code
+            new_code = f"{random.randint(100000, 999999)}"
+            
+            save_data = {
+                "giftcode": new_code,
+                "timestamp": now_ms
+            }
+            
+            # Save to Firebase
+            put_url = f"{DATABASE_URL}/{PATH}.json?auth={DB_SECRET}"
+            requests.put(put_url, json=save_data, timeout=10)
+            
             await update.message.reply_text(new_code)
+            print(f"✅ New code generated: {new_code} for user {user.id}")
         else:
-            print(f"❌ Firebase save failed: {response.text}")
-            await update.message.reply_text(new_code)  # Still send code
+            # Send existing code (within 1 minute)
+            await update.message.reply_text(stored_giftcode)
+            print(f"✅ Sent existing code: {stored_giftcode} to user {user.id}")
             
     except Exception as e:
         print(f"❌ Error: {e}")
-        await update.message.reply_text(new_code)  # Fallback: still send code
+        # Fallback: Generate and send new code if anything fails
+        new_code = f"{random.randint(100000, 999999)}"
+        await update.message.reply_text(new_code)
 
 app = Application.builder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 
-print("Bot running - New giftcode every /start")
+print("Bot running - 1 minute giftcode cooldown")
 app.run_polling()
