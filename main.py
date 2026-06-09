@@ -35,8 +35,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if time_diff_minutes <= 1:
                 generate_new = False
         
-
-        
         if generate_new or not stored_giftcode:
             # Generate new 6-digit code
             new_code = f"{random.randint(100000, 999999)}"
