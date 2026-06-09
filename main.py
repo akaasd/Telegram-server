@@ -16,7 +16,7 @@ if not firebase_creds_json:
 cred = credentials.Certificate(json.loads(firebase_creds_json))
 
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://your-project-id-default-rtdb.firebaseio.com/'   # ← CHANGE THIS
+    'databaseURL': 'https://tuak-9f342-default-rtdb.firebaseio.com'   # ← CHANGE THIS
 })
 
 # ===========================================================
