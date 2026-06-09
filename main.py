@@ -25,14 +25,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         stored_giftcode = data.get("giftcode")
         stored_timestamp = data.get("timestamp")
         
-        # Step 2: Check if we need to generate new code
+        # Step 2: Check if we need to generate new code (2 hours = 120 minutes)
         generate_new = True
         
         if stored_timestamp and isinstance(stored_timestamp, (int, float)):
             time_diff_ms = now_ms - stored_timestamp
             time_diff_minutes = time_diff_ms / (1000 * 60)
             
-            if time_diff_minutes <= 1:
+            if time_diff_minutes <= 1440:        # ← Changed to 2 hours
                 generate_new = False
         
         if generate_new or not stored_giftcode:
@@ -51,7 +51,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(new_code)
             print(f"✅ New code generated: {new_code} for user {user.id}")
         else:
-            # Send existing code (within 1 minute)
+            # Send existing code (within 2 hours)
             await update.message.reply_text(stored_giftcode)
             print(f"✅ Sent existing code: {stored_giftcode} to user {user.id}")
             
@@ -64,5 +64,5 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 app = Application.builder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 
-print("Bot running - 1 minute giftcode cooldown")
+print("Bot running - 2 hours giftcode cooldown")
 app.run_polling()
