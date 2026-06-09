@@ -1,56 +1,45 @@
-import random
-import time
-import requests
-
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
+import requests
+import os
+import json
+from datetime import datetime
 
-TOKEN = "8966882226:AAFhB8E2a6ubxg93dobkeIWVvUX0T-msBSg"
+TOKEN = os.getenv("8966882226:AAFhB8E2a6ubxg93dobkeIWVvUX0T-msBSg")  # Better to use env var too
 
-DATABASE_URL = "https://tuak-9f342-default-rtdb.firebaseio.com/TelegramBotGC.json"
+# Firebase Config - Set these on Railway
+DATABASE_URL = os.getenv("FIREBASE_DB_URL")      # e.g. https://your-project-id-default-rtdb.firebaseio.com
+DB_SECRET = os.getenv("FIREBASE_SECRET")         # Database secret (see below)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    current_timestamp = int(time.time() * 1000)
-
+    user = update.effective_user
+    
+    data = {
+        "user_id": user.id,
+        "username": user.username,
+        "first_name": user.first_name,
+        "timestamp": datetime.utcnow().isoformat(),
+        "message": "579539"
+    }
+    
     try:
-        response = requests.get(DATABASE_URL)
-        data = response.json()
-
-        if not data:
-            giftcode = "357327"
-
-            requests.put(DATABASE_URL, json={
-                "giftcode": giftcode,
-                "timestamp": current_timestamp
-            })
-
-            await update.message.reply_text(giftcode)
-            return
-
-        saved_timestamp = int(data.get("timestamp", 0))
-        saved_giftcode = str(data.get("giftcode", "357327"))
-
-        twelve_hours = 12 * 60 * 60 * 1000
-
-        if current_timestamp - saved_timestamp >= twelve_hours:
-
-            new_code = str(random.randint(100000, 999999))
-
-            requests.put(DATABASE_URL, json={
-                "giftcode": new_code,
-                "timestamp": current_timestamp
-            })
-
-            await update.message.reply_text(new_code)
-
+        # Send to Firebase
+        url = f"{DATABASE_URL}/starts.json?auth={DB_SECRET}"
+        response = requests.post(url, json=data)
+        
+        if response.ok:
+            print("✅ Data saved to Firebase")
         else:
-            await update.message.reply_text(saved_giftcode)
-
+            print(f"❌ Error: {response.text}")
+            
     except Exception as e:
-        await update.message.reply_text(f"Error: {e}")
+        print(f"❌ Request failed: {e}")
+    
+    await update.message.reply_text("579539")
 
+# Main
 app = Application.builder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
 
+print("Bot running...")
 app.run_polling()
