@@ -38,7 +38,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             time_diff_ms = now_ms - stored_timestamp
             time_diff_minutes = time_diff_ms / (1000 * 60)
 
-            if time_diff_minutes <= 1440:  # 24 hours
+            if time_diff_minutes <= 1380:  # 24 hours
                 generate_new = False
 
         if generate_new or not stored_giftcode:
@@ -59,9 +59,9 @@ f"""🎁 *BASF Gift Code Available!*
 
 Your BASF Gift Code is:
 
-━━━━━━━━━
+━━━━━
 `{new_code}`
-━━━━━━━━━
+━━━━━
 
 Use this code to access your available gift. We hope you enjoy it!
 ⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM.""",
@@ -77,9 +77,9 @@ f"""🎁 *BASF Gift Code Available!*
 
 Your BASF Gift Code is:
 
-━━━━━━━
+━━━━━
 `{stored_giftcode}`
-━━━━━━━
+━━━━━
 
 Use this code to access your available gift. We hope you enjoy it!
 ⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM.""",
@@ -98,9 +98,9 @@ f"""🎁 *BASF Gift Code Available!*
 
 Your BASF Gift Code is:
 
-━━━━━━━
+━━━━━
 `{new_code}`
-━━━━━━━
+━━━━━
 
 Use this code to access your available gift. We hope you enjoy it!
 ⏰ Check back tomorrow for another code. Gift codes reset at 12:00 AM.""",
